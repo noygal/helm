@@ -56,8 +56,37 @@ Create the name of the service account to use
 */}}
 {{- define "containers-pod.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "containers-pod.fullname" .) .Values.serviceAccount.name }}
+  {{ default (include "containers-pod.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+  {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Map a contanier values to a container template
+Reference: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+*/}}
+{{ define "mapper.containers" }}
+{{- $common := .Values.pod.common }}
+{{- $commonEnv := .Values.pod.commonEnv | default list }}
+containers:
+{{- range .Values.pod.containers -}}
+  {{- $container := (merge . $common) }}
+  {{- $env := concat $commonEnv (.env | default list) | default list }}
+  {{- $_ := unset $container "env" }}
+  - env:
+{{ toYaml $env | indent 6 }}
+{{ toYaml $container | indent 4}}
+{{- end }}
+{{- if .Values.pod.initContainers }}
+{{- range .Values.pod.initContainers }}
+initContainers:
+  {{- $container := merge . $common }}
+  {{- $env := concat $commonEnv (.env | default list) | default list }}
+  {{- $_ := unset $container "env" }}
+  - env:
+{{ toYaml $env | indent 6 }}
+{{ toYaml $container | indent 4 }}
+{{- end }}
+{{- end }}
+{{ end }}

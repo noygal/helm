@@ -75,7 +75,7 @@ containers:
   {{- $env := concat $commonEnv (.env | default list) | default list }}
   {{- $_ := unset $container "env" }}
   - env:
-{{ toYaml $env | indent 6 }}
+{{ toYaml $env | indent 4 }}
 {{ toYaml $container | indent 4}}
 {{- end }}
 {{- if .Values.pod.initContainers }}
@@ -85,7 +85,7 @@ initContainers:
   {{- $env := concat $commonEnv (.env | default list) | default list }}
   {{- $_ := unset $container "env" }}
   - env:
-{{ toYaml $env | indent 6 }}
+{{ toYaml $env | indent 4 }}
 {{ toYaml $container | indent 4 }}
 {{- end }}
 {{- end }}

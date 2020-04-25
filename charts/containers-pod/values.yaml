@@ -16,7 +16,13 @@ serviceAccount:
 
 service:
   type: ClusterIP
-  port: 80
+  ports:
+    - port: 8443
+      targetPort: 8443
+      name: code-server
+    - port: 8080
+      targetPort: 8080
+      name: cloud9
 
 ingress:
   enabled: false
@@ -65,6 +71,7 @@ pod:
       ports:
         - containerPort: 8443
           protocol: UDP'
+          name: code-server
       volumeMounts:
         - mountPath: /config
           name: appdata
@@ -74,6 +81,7 @@ pod:
       ports:
         - containerPort: 8080
           protocol: UDP'
+          name: cloud9
       env:
         - name: GITURL
           value: https://github.com/linuxserver/docker-cloud9.git

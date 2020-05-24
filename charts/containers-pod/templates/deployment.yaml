@@ -5,7 +5,16 @@ metadata:
   labels:
     {{- include "containers-pod.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.pod.replicaCount }}
+  replicas: {{ .Values.pod.replicas | default 1 }}
+  {{- with .Values.pod.minReadySeconds }}
+  minReadySeconds: {{ . }}
+  {{- end }}
+  {{- with .Values.pod.progressDeadlineSeconds }}
+  progressDeadlineSeconds: {{ . }}
+  {{- end }}
+  {{- with .Values.pod.progressDeadlineSeconds }}
+  revisionHistoryLimit: {{ . }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "containers-pod.selectorLabels" . | nindent 6 }}
@@ -26,6 +35,10 @@ spec:
         {{- toYaml .Values.pod.volumes | nindent 8 }}
       {{- end }}
       {{- include "mapper.containers" . | nindent 6 }}
+      {{- with .Values.pod.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.pod.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -17,28 +17,36 @@ serviceAccount:
 service:
   type: ClusterIP
   ports:
-    - port: 8443
-      targetPort: 8443
-      name: code-server
-    - port: 8080
-      targetPort: 8080
+    - port: 3000
+      targetPort: 3000
+      name: codimd
+    - port: 8000
+      targetPort: 8000
       name: cloud9
 
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+ingresses:
+  - name: codimd
+    # disabled: true
+    annotations:
+      kkubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+    rules:
+      - path: '/'
+        serviceName: codimd
+        servicePort: 3000
+        host: codimd.k3s
+  - name: cloud9
+    # disabled: true
+    annotations:
+      kkubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+    rules:
+      - path: '/'
+        servicePort: 8000
+        host: cloud9.k3s
 
 pod:
-  replicaCount: 1
+  replicas: 1
   imagePullSecrets: []
   podSecurityContext: {}
   nodeSelector: {}
@@ -52,39 +60,67 @@ pod:
         server: 192.168.1.10
         path: /appdata
   # Shared environment variables - would be concat to the start of the array
-  commonEnv:
+  sharedEnv:
     - name: GUID
       value: '1000'
     - name: PUID
       value: '1000'
     - name: TZ
       value: Asia/Jerusalem
-  # Shared containers fields - can be override by setting the field in the container declaration
-  common:
+  # Shared containers values - can be override by setting the field in the container declaration
+  sharedValues:
+    imagePullPolicy: IfNotPresent
     securityContext: {}
     resources: {}
   # The containers to deploy
   # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
   containers:
-    - name: code-server
-      image: linuxserver/code-server:latest
+    - name: codimd
+      image: linuxserver/codimd:latest
+      env:
+        - name: DB_HOST
+          value: localhost
+        - name: DB_USER
+          value: codimd
+        - name: DB_PASS
+          value: topSecretPassword
+        - name: DB_NAME
+          value: codimd
+        - name: DB_PORT
+          value: '3306'
       ports:
-        - containerPort: 8443
-          protocol: UDP'
-          name: code-server
+        - containerPort: 3000
+          name: codimd
       volumeMounts:
         - mountPath: /config
           name: appdata
-          subPath: k3s/dev/code-server/config
+          subPath: k3s/dev/codimd/config
+    - name: mariadb
+      image: linuxserver/mariadb:latest
+      # ports:
+      #   - containerPort: 8000
+      #     name: mariadb
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: topSecretRootPassword
+        - name: MYSQL_DATABASE
+          value: codimd
+        - name: MYSQL_USER
+          value: codimd
+        - name: MYSQL_PASSWORD
+          value: topSecretPassword
+      volumeMounts:
+        - mountPath: /config
+          name: appdata
+          subPath: k3s/dev/mariadb/config
     - name: cloud9
       image: linuxserver/cloud9:latest
       ports:
-        - containerPort: 8080
-          protocol: UDP'
+        - containerPort: 8000
           name: cloud9
       env:
         - name: GITURL
-          value: https://github.com/linuxserver/docker-cloud9.git
+          value: https://github.com/noygal/helm.git
       volumeMounts:
         - mountPath: /config
           name: appdata

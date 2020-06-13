@@ -1,6 +1,6 @@
 # `example-dev-tools` - helm chart (v3)
 
-The current [`values.yaml`](https://github.com/noygal/helm/example-dev-tools/values.yaml) includes some good examples for deployment use cases:
+The current [`values.yaml`](https://github.com/noygal/helm/charts/example-dev-tools/values.yaml) includes some good examples for deployment use cases:
 
 1. [cloud9](https://aws.amazon.com/cloud9/) - exposed as service and ingress.
 
@@ -15,4 +15,4 @@ Please notice that this chart would NOT deploy with those values unless you have
 helm install -f my-values.yaml example-dev-tools
 ```
 
-For the full chart API please refer to the [base-chart](https://github.com/noygal/helm/base-chart).
+For the full chart API please refer to the [base-chart](https://github.com/noygal/helm/charts/base-chart).

@@ -1,6 +1,6 @@
 # `example-dev-tools` - helm chart (v3)
 
-The current [`values.yaml`](https://github.com/noygal/helm/tree/master/charts/example-dev-tools/values.yaml) includes some good examples for deployment use cases:
+The current [`values.yaml`](https://github.com/noygal/helm/blob/master/charts/exmple-dev-tools/values.yaml) includes some good examples for deployment use cases:
 
 1. [cloud9](https://aws.amazon.com/cloud9/) - exposed as service and ingress.
 

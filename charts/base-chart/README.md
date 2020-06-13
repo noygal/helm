@@ -8,7 +8,7 @@ The aim and goal of this [helm](https://helm.sh/) chart is to provide a base/dep
 helm install -f my-values.yaml base-chart
 ```
 
-You can check out an example [here](https://github.com/noygal/helm/charts/exmple-dev-tools).
+You can check out an example [here](https://github.com/noygal/helm/tree/master/charts/exmple-dev-tools).
 
 ## API (values)
 

@@ -43,6 +43,7 @@ base-chart:
         traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
       rules:
         - path: '/'
+          serviceName: cloud9
           servicePort: 8000
           host: cloud9.k3s
 

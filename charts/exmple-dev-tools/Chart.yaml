@@ -22,5 +22,5 @@ appVersion: 1.16.0
 
 dependencies:
   - name: base-chart
-    version: 0.1.0
+    version: 0.1.1
     repository: https://noygal.github.com/helm

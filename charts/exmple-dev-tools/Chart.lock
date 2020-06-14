@@ -1,0 +1,6 @@
+dependencies:
+- name: base-chart
+  repository: https://noygal.github.com/helm
+  version: 0.1.0
+digest: sha256:ff983a56d6e8f4598d52380d69b1418bb7910bf9311355213176e541b93b3984
+generated: "2020-06-14T23:39:07.077804+03:00"

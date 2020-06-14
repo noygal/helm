@@ -3,9 +3,9 @@ entries:
   base-chart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-06-14T23:41:20.797823+03:00"
+    created: "2020-06-14T23:53:32.986999+03:00"
     description: A Helm chart for Kubernetes
-    digest: 49387c3693bd55fb2a36249ba874dd55467e94d61ee5c22a065cf552d1af8bb8
+    digest: 087ab37bd608f3fd2b170c798e077db35fc6a20f6c8c90d8ea6ad6883231f8e1
     name: base-chart
     type: application
     urls:
@@ -14,16 +14,16 @@ entries:
   example-dev-tools:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2020-06-14T23:41:20.80214+03:00"
+    created: "2020-06-14T23:53:32.988307+03:00"
     dependencies:
     - name: base-chart
       repository: https://noygal.github.com/helm
       version: 0.1.0
     description: Exmpale chart deploing cloud9, codimd and mariadb
-    digest: 23fe8f47b3f0ff7fa4b080a2d485934614c07a5367dc4342e91e9feb7cbe5be3
+    digest: d9eb03a2cdd9f3fbdc17ca5689e02f9d99043bfb400febb94280408262453962
     name: example-dev-tools
     type: application
     urls:
     - https://noygal.github.io/helm/example-dev-tools-0.1.0.tgz
     version: 0.1.0
-generated: "2020-06-14T23:41:20.797171+03:00"
+generated: "2020-06-14T23:53:32.986364+03:00"

@@ -1,0 +1,119 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: unifi-controller
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 3478
+        targetPort: 3478
+        name: p3478udp
+        protocol: UDP
+      - port: 10001
+        targetPort: 10001
+        name: p10001udp
+        protocol: UDP
+      - port: 8080
+        targetPort: 8080
+        name: p8080
+      - port: 8443
+        targetPort: 8443
+        name: p8443
+      - port: 1900
+        targetPort: 1900
+        name: p1900udp
+        protocol: UDP
+      - port: 8843
+        targetPort: 8843
+        name: p8843
+      - port: 8880
+        targetPort: 8880
+        name: p8880
+      - port: 6789
+        targetPort: 6789
+        name: p6789
+      - port: 5514
+        targetPort: 5514
+        name: p5514
+
+  ingresses: 
+    - name: unifi-controller
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p10001/udp
+          servicePort: 10001&#x2F;udp
+          host: unifi-controller.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: unifi
+        image: linuxserver/unifi-controller
+        env: []
+        ports: 
+          - containerPort: 3478
+            name: p3478udp
+            protocol: UDP
+          - containerPort: 10001
+            name: p10001udp
+            protocol: UDP
+          - containerPort: 8080
+            name: p8080
+          - containerPort: 8443
+            name: p8443
+          - containerPort: 1900
+            name: p1900udp
+            protocol: UDP
+          - containerPort: 8843 #optional
+            name: p8843 #optional
+          - containerPort: 8880 #optional
+            name: p8880 #optional
+          - containerPort: 6789 #optional
+            name: p6789 #optional
+          - containerPort: 5514 #optional
+            name: p5514 #optional
+        volumeMounts: []

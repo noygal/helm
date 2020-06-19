@@ -1,0 +1,80 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: habridge
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 8080
+        targetPort: 8080
+        name: p8080
+      - port: 50000
+        targetPort: 50000
+        name: p50000
+
+  ingresses: 
+    - name: habridge
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p8080
+          servicePort: 8080
+          host: habridge.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: habridge
+        image: linuxserver/habridge
+        env: 
+          - name: SEC_KEY
+            value: <Your Key To Encrypt Security Data>
+        ports: 
+          - containerPort: 8080
+            name: p8080
+          - containerPort: 50000
+            name: p50000
+        volumeMounts: []

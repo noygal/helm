@@ -1,0 +1,87 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: syncthing
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 8384
+        targetPort: 8384
+        name: p8384
+      - port: 22000
+        targetPort: 22000
+        name: p22000
+      - port: 21027
+        targetPort: 21027
+        name: p21027udp
+        protocol: UDP
+
+  ingresses: 
+    - name: syncthing
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p8384
+          servicePort: 8384
+          host: syncthing.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: syncthing
+        image: linuxserver/syncthing
+        env: 
+          - name: UMASK_SET
+            value: <022>
+        ports: 
+          - containerPort: 8384
+            name: p8384
+          - containerPort: 22000
+            name: p22000
+          - containerPort: 21027
+            name: p21027udp
+            protocol: UDP
+        volumeMounts: []

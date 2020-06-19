@@ -1,0 +1,85 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: transmission
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 9091
+        targetPort: 9091
+        name: p9091
+      - port: 51413
+        targetPort: 51413
+        name: p51413
+      - port: 51413
+        targetPort: 51413
+        name: p51413udp
+        protocol: UDP
+
+  ingresses: 
+    - name: transmission
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p9091
+          servicePort: 9091
+          host: transmission.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: transmission
+        image: linuxserver/transmission
+        env: []
+        ports: 
+          - containerPort: 9091
+            name: p9091
+          - containerPort: 51413
+            name: p51413
+          - containerPort: 51413
+            name: p51413udp
+            protocol: UDP
+        volumeMounts: []

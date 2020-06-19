@@ -1,0 +1,18 @@
+apiVersion: v2
+name: duplicati
+description: "This chart deploys the 'duplicati' service, please refer to the documentation at: https://noygal.github.com/helm/duplicati"
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 0.1.2
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: 0.1.1
+
+dependencies:
+  - name: base-chart
+    version: 0.1.1
+    repository: "https://noygal.github.com/helm"
+

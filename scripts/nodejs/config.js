@@ -5,9 +5,9 @@ module.exports = {
   // The temporary working folder
   workingFolder,
   // The output folder for the charts
-  outputFolder: path.join(__dirname, '../../output'),
+  outputFolder: path.join(__dirname, '../../gen'),
   // The helm chart repository
-  repository: 'https://github.com/noygal/helm',
+  repository: 'https://noygal.github.com/helm',
   // Git related settings
   git: {
     repository: 'https://github.com/linuxserver/docker-documentation',
@@ -29,7 +29,7 @@ module.exports = {
   versions: {
     chartVersion: '0.1.2',
     appVersion: '0.1.1',
-    baseChartVersion: '0.1.0',
+    baseChartVersion: '0.1.1',
   },
   chart: {
     host: 'k3s',

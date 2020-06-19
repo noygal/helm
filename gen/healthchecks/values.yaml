@@ -1,0 +1,95 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: healthchecks
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 8000
+        targetPort: 8000
+        name: p8000
+
+  ingresses: 
+    - name: healthchecks
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p8000
+          servicePort: 8000
+          host: healthchecks.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: healthchecks
+        image: linuxserver/healthchecks
+        env: 
+          - name: SITE_ROOT
+            value: <SITE_ROOT>
+          - name: SITE_NAME
+            value: <SITE_NAME>
+          - name: DEFAULT_FROM_EMAIL
+            value: <DEFAULT_FROM_EMAIL>
+          - name: EMAIL_HOST
+            value: <EMAIL_HOST>
+          - name: EMAIL_PORT
+            value: <EMAIL_PORT>
+          - name: EMAIL_HOST_USER
+            value: <EMAIL_HOST_USER>
+          - name: EMAIL_HOST_PASSWORD
+            value: <EMAIL_HOST_PASSWORD>
+          - name: EMAIL_USE_TLS
+            value: <True or False>
+          - name: ALLOWED_HOSTS
+            value: <ALLOWED_HOSTS>
+          - name: SUPERUSER_EMAIL
+            value: <SUPERUSER_EMAIL>
+          - name: SUPERUSER_PASSWORD
+            value: <SUPERUSER_PASSWORD>
+        ports: 
+          - containerPort: 8000
+            name: p8000
+        volumeMounts: []

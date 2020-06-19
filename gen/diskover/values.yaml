@@ -1,0 +1,113 @@
+# Default values for containers-pod.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+containers-pod:
+  nameOverride: diskover
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  service:
+    type: ClusterIP
+    ports: 
+      - port: 80
+        targetPort: 80
+        name: p80
+      - port: 9181
+        targetPort: 9181
+        name: p9181
+      - port: 9999
+        targetPort: 9999
+        name: p9999
+
+  ingresses: 
+    - name: diskover
+      # disabled: true
+      annotations:
+        kkubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+        traefik.ingress.kubernetes.io/preserve-host: "false"
+      rules:
+        - path: '/'
+          serviceName: p80
+          servicePort: 80
+          host: diskover.k3s
+
+  pod:
+    replicas: 1
+    imagePullSecrets: []
+    podSecurityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    # Volumes to mount
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#volume-v1-core
+    volumes:
+      - name: appdata
+        nfs: 
+          server: 192.168.1.10
+          path: /appdata
+    # Shared environment variables - would be concat to the start of the array
+    sharedEnv:
+      - name: GUID
+        value: '1000'
+      - name: PUID
+        value: '1000'
+      - name: TZ
+        value: Asia/Jerusalem
+    # Shared containers values - can be override by setting the field in the container declaration
+    sharedValues:
+      imagePullPolicy: IfNotPresent
+      securityContext: {}
+      resources: {}
+    # The containers to deploy
+    # Docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+    containers:
+      - name: diskover
+        image: linuxserver/diskover
+        env: 
+          - name: REDIS_HOST
+            value: localhost
+          - name: REDIS_PORT
+            value: 6379
+          - name: ES_HOST
+            value: localhost
+          - name: ES_PORT
+            value: 9200
+          - name: ES_USER
+            value: elastic
+          - name: ES_PASS
+            value: changeme
+          - name: RUN_ON_START
+            value: true
+          - name: USE_CRON
+            value: true
+        ports: 
+          - containerPort: 80
+            name: p80
+          - containerPort: 9181
+            name: p9181
+          - containerPort: 9999
+            name: p9999
+        volumeMounts: []
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.9
+        env: 
+          - name: bootstrap.memory_lock
+            value: true
+          - name: "ES_JAVA_OPTS
+            value: -Xms2048m -Xmx2048m"
+        ports: []
+        volumeMounts: []
+      - name: redis
+        image: redis:alpine
+        env: []
+        ports: []
+        volumeMounts: []

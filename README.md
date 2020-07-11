@@ -32,11 +32,11 @@ All the charts code generation is located under `script/nodejs`, it should be pr
 
 ### `charts` folder
 
-Contains the [base chart](https://noygal.github.com/helm/charts/base-chart) for all the generated charts, also an usage [example](https://noygal.github.com/helm/charts/example-dev-tools).
+Contains the [base chart](https://github.com/noygal/helm/tree/master/charts/base-chart) for all the generated charts, also an usage [example](https://github.com/noygal/helm/tree/master/charts/exmple-dev-tools).
 
 ### `scripts` folder
 
-Contains various maintenance scripts and the [Node.JS script](https://noygal.github.com/helm/scripts/nodejs) that generate the linuxserver.io charts.
+Contains various maintenance scripts and the [Node.JS script](https://github.com/noygal/helm/tree/master/scripts/nodejs) that generate the linuxserver.io charts.
 
 ### `gen` folder
 

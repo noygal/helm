@@ -55,7 +55,7 @@ const mapContainer = ([name, { image, environment = [], ports = [] }]) => {
   return { name, image, ports: processedPorts, env }
 }
 
-const generateValues = config => ({ name, ports, docker }) => {
+const generateValues = config => ({ name, ports, docker, volumes }) => {
   // Processing docker file
   // The render data for the template
   const renderData = {
@@ -79,19 +79,18 @@ const generateValues = config => ({ name, ports, docker }) => {
   if (uiPort)
     renderData.ingresses = { name, rules: [{name: 'p' + uiPort[0], port: uiPort[0], host: `${name}.${config.chart.host}`}] }
   // Adding container data
-  const containers = Object.entries(docker)
+  const containers = renderData.containers = Object.entries(docker)
     .map(mapContainer)
   // Apply override if needed
-  const getEnv = () => config.chart.overrides.env[name]
-  renderData.containers = config.chart.overrides && config.chart.overrides.env && getEnv() 
-    ? containers.map(({env, ...rest}) => ({
-      env: env.map(el => getEnv()[el.name] 
-        ? {name: el.name, value: getEnv()[el.name]} 
+  const overrideEnv = config.chart.overrides && config.chart.overrides.env && config.chart.overrides.env[name]
+  if (overrideEnv)
+    renderData.containers = containers.map(({env, ...rest}) => ({
+      env: env.map(el => overrideEnv[el.name] 
+        ? {name: el.name, value: overrideEnv[el.name]} 
         : el
       ),
       ...rest
     }))
-    : containers
 
   const output = mustache.render(valuesTemplate, renderData)
   return { name, output, renderData }

@@ -18,7 +18,7 @@ const logWrap = logFun => (...props) => {
 
 const getFirstLine = file => file.content.split('\n')[0]
 
-const preprocessFiles = files =>
+const preprocessFiles = config => files =>
   files
     .map(logWrap((file, i) => logger.log(`${i} - Found file: ${file.fileName}`)))
     // Filtering only valid files
@@ -30,28 +30,34 @@ const preprocessFiles = files =>
     .map(logWrap((data, i) => logger.log(`${i} - Data populates from file: ${data.fileName}, name: ${data.name}`)))
 
 
-const processData = data => 
+const processData = config => data =>
   Promise.all(
     data
       .map(async ({ name, fileName, fullPath, description, ports, env, volumes, devices, arch, dockerCompose }) => {
-        await fs.ensureDir(path.join(config.outputFolder, name))
         const docker = processor.processDockerCompose(dockerCompose)
-
-        const values = processor.generateValues(config)({ name, ports, docker })
+        const values = processor.generateValues(config)({ name, ports, docker, volumes })
         const chart = processor.generateChart(config)({ name })
         const readme = processor.generateReadme(config)({ name, description })
-        await fs.writeFile(path.join(config.outputFolder, name, 'values.yaml'), values.output)
-        await fs.writeFile(path.join(config.outputFolder, name, 'Chart.yaml'), chart.output)
-        await fs.writeFile(path.join(config.outputFolder, name, 'README.md'), readme.output)
+        return { name, values, chart, readme }
       })
   )
 
+const writeFile = ({ outputFolder }) => ({ name, values, chart, readme }) =>
+  fs.ensureDir(path.join(outputFolder, name))
+    .then(() => Promise.all([
+      fs.writeFile(path.join(outputFolder, name, 'values.yaml'), values.output),
+      fs.writeFile(path.join(outputFolder, name, 'Chart.yaml'), chart.output),
+      fs.writeFile(path.join(outputFolder, name, 'README.md'), readme.output)
+    ]))
+
 getImageDocsFiles(config)
-  .then(preprocessFiles)
-  .then(processData)
+  .then(preprocessFiles(config))
+  .then(processData(config))
   // .then(results => console.log(require('util').inspect(results.find(el => !el.dockerCompose), {showHidden: false, depth: null})))
   // .then(results => console.log(require('util').inspect(results[85], {showHidden: false, depth: null})))
   // .then(results => Promise.all(results.map(({name, output}))))
+  // .then(console.log)
+  .then(data => Promise.all(data.map(writeFile(config))))
+  // .then(data => writeFile(config)(data[0]))
   .catch(console.error)
   .then(cleanup)
-

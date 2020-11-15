@@ -88,11 +88,11 @@ containers-pod:
             {{#protocol}}
             protocol: {{protocol}}
             {{/protocol}}
-          {{/ports}}   
+          {{/ports}}
         volumeMounts: {{^volumeMounts}}[]{{/volumeMounts}}
           {{#volumeMounts}}
           - mountPath: {{{mountPath}}}
-            name: appdata
-            subPath: k3s/{{{name}}}/config
+            name: {{{name}}}
+            subPath: {{{subPath}}}
           {{/volumeMounts}} 
   {{/containers}}

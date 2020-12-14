@@ -1,4 +1,4 @@
-Container-pod notes:
+BaseChart notes:
 
 Public host url:
 {{- range .Values.ingresses }}

@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --debug --config .github/config/ct.yaml
+        run: ct lint --config .github/config/ct.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.0.0

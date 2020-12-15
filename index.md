@@ -5,6 +5,7 @@ This repository is a helm charts repository containing most of the [linuxserver.
 |Name|Version|Description|Type|AppVersion|Created|Downloads
 |:--|:-:|:--|:--|:--:|:--|:--:|
 base-chart|0.2.0|A Helm chart for Kubernetes|application|1.16.0|2020-12-14T23:54:40.535612165Z|[link](https://github.com/noygal/helm/releases/download/base-chart-0.2.0/base-chart-0.2.0.tgz) 
+example-dev-tools|0.2.7|Example chart - deploying cloud9, codimd and mariadb|application|1.16.0|2020-12-15T22:09:12.987130167Z|[link](https://github.com/noygal/helm/releases/download/example-dev-tools-0.2.7/example-dev-tools-0.2.7.tgz) 
 example-dev-tools|0.2.6|Example chart - deploying cloud9, codimd and mariadb|application|1.16.0|2020-12-15T21:38:49.282772619Z|[link](https://github.com/noygal/helm/releases/download/example-dev-tools-0.2.6/example-dev-tools-0.2.6.tgz) 
 example-dev-tools|0.2.5|Example chart - deploying cloud9, codimd and mariadb|application|1.16.0|2020-12-15T21:25:14.668920688Z|[link](https://github.com/noygal/helm/releases/download/example-dev-tools-0.2.5/example-dev-tools-0.2.5.tgz) 
 example-dev-tools|0.2.4|Example chart - deploying cloud9, codimd and mariadb|application|1.16.0|2020-12-15T21:20:09.850292058Z|[link](https://github.com/noygal/helm/releases/download/example-dev-tools-0.2.4/example-dev-tools-0.2.4.tgz) 

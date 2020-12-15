@@ -2,10 +2,10 @@
 
 Welcome to this helm repo, this file is auto generated, check the code [here](https://github.com/noygal/helm).
 
-|Name|version|description|Type|appVersion|created|
-|:--|:-:|:--|:--|:--:|:--|
+|Name|Version|Description|Type|AppVersion|Created|Downloads
+|:--|:-:|:--|:--|:--:|:--|:--:|
 {{#each entries}}
 {{#each .}}
-{{this.name}}|{{this.version}}|{{this.description}}|{{this.type}}|{{this.appVersion}}|{{this.created}}|[download]({{this.urls[0]}})
+{{this.name}}|{{this.version}}|{{this.description}}|{{this.type}}|{{this.appVersion}}|{{this.created}}|{{#each this.urls}}[link]({{this}}) {{/each}}
 {{/each}}
 {{/each}}

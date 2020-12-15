@@ -1,5 +1,3 @@
 target-branch: master
 charts_dir:
   - charts
-excluded-charts:
-  - example-dev-tools

@@ -22,7 +22,7 @@ entries:
     - name: base-chart
       repository: https://noygal.github.com/helm
       version: 0.1.1
-    description: Exmpale chart deploing cloud9, codimd and mariadb
+    description: Example chart - deploying cloud9, codimd and mariadb
     digest: 6d0e3ce41858e8572fe02203972b430fbc39758761ca1337a372645691728fbd
     name: example-dev-tools
     type: application

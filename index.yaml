@@ -17,6 +17,20 @@ entries:
   example-dev-tools:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2020-12-15T01:03:40.22809117Z"
+    dependencies:
+    - name: base-chart
+      repository: https://noygal.github.com/helm
+      version: 0.2.0
+    description: Example chart - deploying cloud9, codimd and mariadb
+    digest: 53a0a9ec01f9ec1fe7a5e84a18cc478921ed2f7276c0dfadc4e7154fcdf0b7af
+    name: example-dev-tools
+    type: application
+    urls:
+    - https://github.com/noygal/helm/releases/download/example-dev-tools-0.2.0/example-dev-tools-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2020-06-20T01:10:19.825505+03:00"
     dependencies:
     - name: base-chart

@@ -1,6 +1,6 @@
 # helm-github-pages-example - Helm charts repository example
 
-Welcome to this helm repo, this file is auto genrerated, check the code [here](https://github.com/noygal/helm-github-pages-example).
+Welcome to this helm repo, this file is auto generated, check the code [here](https://github.com/noygal/helm).
 
 |Name|version|description|Type|appVersion|created|
 |:--|:-:|:--|:--|:--:|:--|

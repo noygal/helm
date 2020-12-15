@@ -1,6 +1,7 @@
 name: Update UI
 
 on:
+  workflow_dispatch: 
   release:
       types:
         - created
